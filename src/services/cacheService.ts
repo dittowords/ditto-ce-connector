@@ -15,6 +15,7 @@ const listItems = async (integrationConfig: IntegrationConfig, auth: AuthConfig)
 
   return Object.entries(validatedData.data).map(([id, data]) => ({
     uniqueId: id,
+    // TODO: potentially normalize the groupId here since the group name can have spaces/other unwanted chars
     groupId: parseName(data.name).groupName || 'null',
     metadata: {},
   }))

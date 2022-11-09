@@ -29,6 +29,11 @@ const getContent = async (
 
   const items = filteredWorkspaceComponentEntries.map(([id, data]) => {
     const localTexts = locales.reduce((acc, local) => {
+      // TODO: potentially downcase/otherwise transform `local` before indexing data.variants
+      // to expand the range of values that would match between Lokalise and Ditto
+      // e.g.
+      // Lokalise: French
+      // Ditto: french
       if (data.variants && data.variants[local]) {
         acc[local] = data.variants[local].text
       } else {
