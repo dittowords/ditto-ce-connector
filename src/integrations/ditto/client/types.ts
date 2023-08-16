@@ -62,3 +62,8 @@ export type DittoError = {
   headers: Record<string, unknown>
   statusCode: number
 }
+
+export type VariantDefinition = {
+  name: string
+  apiID: string
+}

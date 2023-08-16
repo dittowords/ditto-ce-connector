@@ -8,7 +8,9 @@ import type {
   UpdateVariantRequestBody,
   UpdateVariantResult,
   WorkspaceComponentsByName,
+  VariantDefinition,
 } from './types'
+import { LocaleDefinition } from '../../../modules/env/envTypes'
 
 const retryConfig = {
   maxAttempts: 3,
@@ -53,6 +55,28 @@ export class APIDitto {
       throw new UnrecognizedError()
     }
     return response.result.body
+  }
+
+  public async getVariantsAsLocales(apiKey: string): Promise<LocaleDefinition[]> {
+    const response = await sendGet<VariantDefinition[]>(this.client, '/variants', {
+      headers: this.extractHeaders(apiKey),
+      throwOnError: false,
+      retryConfig,
+    })
+
+    if (response.error) {
+      if (response.error.statusCode === 401) {
+        throw new AuthFailedError()
+      }
+      throw new UnrecognizedError()
+    }
+
+    const result = response.result.body
+
+    return result.map((item) => ({
+      name: item.name,
+      code: item.apiID,
+    }))
   }
 
   public async updateVariant(
