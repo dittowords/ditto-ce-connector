@@ -1,8 +1,0 @@
-services:
-  app:
-    restart: always
-    ports:
-      - 3009:3000/tcp
-    env_file:
-      - .env.default
-      - .env.vault

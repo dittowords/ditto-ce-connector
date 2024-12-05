@@ -1,8 +1,0 @@
-services:
-  app:
-    ports:
-      - '80:3000'
-      - 9080:9080
-    restart: unless-stopped
-    env_file:
-      - .env.default
