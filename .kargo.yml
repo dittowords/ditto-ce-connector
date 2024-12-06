@@ -1,0 +1,38 @@
+name: ce-connector-ditto
+jobs:
+  - name: build-{{.PR}}
+    noAgent: true
+    triggers:
+      githubHook: true
+    pipeline:
+      kind: build
+      parameters:
+        command: bash scripts/build.sh
+
+  - name: deploy-{{.PR}}
+    node: ditto-{{.PR}}
+    instance:
+      health:
+        port: 80
+        statusCode: 200
+        path: /health
+    triggers:
+      upstream: build-{{.PR}}
+    secrets:
+      vault:
+        envFolder: deployment
+    commands:
+      - TAG=PRE-{{.PR}} deployment/deploy.kargo.sh
+
+  - name: tag-{{.PR}}
+    when:
+      branch: main
+    node: build
+    triggers:
+      upstream: deploy-{{.PR}}
+    pipeline:
+      kind: tag
+      parameters:
+        onlyECR: true
+        services:
+          - app
